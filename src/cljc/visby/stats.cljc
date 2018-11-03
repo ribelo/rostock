@@ -55,12 +55,6 @@
         ([xs x] (conj! xs x))))))
 
 
-(criterium.core/quick-bench (into [] median (range 10000)))
-;;815.563060 µs
-
-(def median (quantile 0.5))
-
-
 (defn percentile [p] (quantile (double (/ p 100))))
 
 

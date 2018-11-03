@@ -36,8 +36,6 @@
 (defn mul* []
   (map #(* ^double % ^double %)))
 
-;;29.285584 µs
-
 
 (def abs (map math/abs))
 
