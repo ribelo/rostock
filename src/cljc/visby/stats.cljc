@@ -20,15 +20,17 @@
 (def median
   (comp
     (x/sort)
-    (x/transjuxt [(x/into []) x/count])
     (x/reduce
       (fn
         ([] (transient []))
-        ([[xs n]] (let [idx (math/max 1.0 (math/floor ^double (/ (dec n) 2)))]
-                    (if (= (mod (dec n) 2) 0)
-                      (double (nth xs idx))
-                      (double (/ (+ (nth xs idx) (nth xs (inc idx))) 2)))))
-        ([acc [xs n]] (-> acc (conj! xs) (conj! n)))))))
+        ([acc]
+         (let [acc' (persistent! acc)
+               c (count acc')
+               idx (math/max 1.0 (math/floor ^double (/ (dec c) 2)))]
+           (if (= (mod (dec c) 2) 0)
+             (double (nth acc' idx))
+             (double (/ (+ (nth acc' idx) (nth acc' (inc idx))) 2)))))
+        ([acc x] (-> acc (conj! x)))))))
 
 
 (defn quantile [p]
@@ -53,8 +55,13 @@
         ([xs x] (conj! xs x))))))
 
 
-(defn percentile [p]
-  (x/reduce (quantile (/ p 100))))
+(criterium.core/quick-bench (into [] median (range 10000)))
+;;815.563060 µs
+
+(def median (quantile 0.5))
+
+
+(defn percentile [p] (quantile (double (/ p 100))))
 
 
 (def quartile
@@ -68,10 +75,13 @@
         (x/transjuxt [(quantile 0.25) (quantile 0.75)])
         (x/reduce
           (fn
-            ([] [])
-            ([[q1 q3]] (- q3 q1))
-            ([acc x] (conj acc x))))))
-
+            ([] nil)
+            ([^doubles acc] (- (aget acc 1) (aget acc 0)))
+            ([_ [^double q1 ^double q3]]
+             (let [acc (double-array 2)]
+               (doto acc
+                 (aset 0 q1)
+                 (aset 1 q3))))))))
 
 (def variance
   (x/reduce
