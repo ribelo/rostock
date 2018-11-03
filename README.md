@@ -1,4 +1,4 @@
-# visby
+# ribelo.visby
 
 A mathematical and quantitative library for Clojure and Clojurescript.
 Visby providing a lot of functionalities for elementary operations, statistics and computational finance.
@@ -15,7 +15,7 @@ The problem may be that I do not know anything about programming, not to mention
 ## Usage
 
 ```clojure
-(require '[visby.emath :as emath)
+(require '[ribelo.visby.emath :as emath)
 
 (->> [{:x 2} {:x 4} {:x 4} {:x 4} {:x 5} {:x 5} {:x 5} {:x 7} {:x 9}]
      (into [] (comp (map :x) (emath/add 100))))
@@ -37,7 +37,7 @@ The problem may be that I do not know anything about programming, not to mention
 
 
 ```clojure
-(require '[visby.stats :as stats)
+(require '[ribelo.visby.stats :as stats)
 
 (->> [{:x 2} {:x 4} {:x 4} {:x 4} {:x 5} {:x 5} {:x 5} {:x 7} {:x 9}]
      (into [] (comp (map :x) stats/median)))
@@ -59,7 +59,7 @@ The problem may be that I do not know anything about programming, not to mention
 ```
 
 ```clojure
-(require '[visby.quant :as quant)
+(require '[ribelo.visby.quant :as quant)
 
 (->> [0.003 0.026 0.015 -0.009 0.014 0.024 0.015 0.066 -0.014 0.039]
      (into [] (quant/sharpe-ratio (/ 0.02 12))))

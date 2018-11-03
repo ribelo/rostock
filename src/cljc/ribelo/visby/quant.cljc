@@ -1,10 +1,10 @@
-(ns visby.quant
+(ns ribelo.visby.quant
   (:require [clojure.spec.alpha :as s]
             [net.cgrand.xforms :as x]
             [net.cgrand.xforms.rfs :as rf]
-            [visby.math :as math]
-            [visby.emath :as emath]
-            [visby.stats :as stats]))
+            [ribelo.visby.math :as math]
+            [ribelo.visby.emath :as emath]
+            [ribelo.visby.stats :as stats]))
 
 
 (defn ann-return-geometric

@@ -1,7 +1,7 @@
-(ns visby.emath
+(ns ribelo.visby.emath
   (:refer-clojure :exclude [min max])
   (:require [net.cgrand.xforms :as x]
-            [visby.math :as math]))
+            [ribelo.visby.math :as math]))
 
 
 (defprotocol Emath

@@ -1,4 +1,4 @@
-(ns visby.math
+(ns ribelo.visby.math
   (:refer-clojure :exclude [min max]))
 
 

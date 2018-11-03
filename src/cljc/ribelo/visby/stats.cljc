@@ -1,8 +1,8 @@
-(ns visby.stats
+(ns ribelo.visby.stats
   (:refer-clojure :exclude [min max])
   (:require [net.cgrand.xforms :as x]
-            [visby.math :as math]
-            [visby.emath :as emath]))
+            [ribelo.visby.math :as math]
+            [ribelo.visby.emath :as emath]))
 
 
 (def min x/min)
