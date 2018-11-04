@@ -151,10 +151,12 @@
            (let [se (math/sq (- y2 y1))
                  c' (inc c)]
              (vswap! y-true' next)
-             (println se c')
              [c' (+ mse (/ (- se mse) c'))])))
         ([[_ mse]]
          mse)))))
+
+(criterium.core/quick-bench
+  (into [] (mean-squared-error (range 10000)) (range 1 10001)))
 
 
 
