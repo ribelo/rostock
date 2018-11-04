@@ -140,6 +140,24 @@
            (reduced acc)))))))
 
 
+(defn mean-squared-error
+  [y-true]
+  (let [y-true' (volatile! (seq y-true))]
+    (x/reduce
+      (fn
+        ([] [0.0 0.0])
+        ([[^double c ^double mse :as acc] y2]
+         (when-let [[y1] @y-true']
+           (let [se (math/sq (- y2 y1))
+                 c' (inc c)]
+             (vswap! y-true' next)
+             (println se c')
+             [c' (+ mse (/ (- se mse) c'))])))
+        ([[_ mse]]
+         mse)))))
+
+
+
 (def skewness-s*
   (fn
     ([] [0.0 0.0 0.0 0.0])
