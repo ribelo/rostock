@@ -140,24 +140,48 @@
            (reduced acc)))))))
 
 
-(defn mean-squared-error
-  [y-true]
+(defn mae [y-true]
   (let [y-true' (volatile! (seq y-true))]
     (x/reduce
       (fn
-        ([] [0.0 0.0])
-        ([[^double c ^double mse :as acc] y2]
-         (when-let [[y1] @y-true']
-           (let [se (math/sq (- y2 y1))
-                 c' (inc c)]
-             (vswap! y-true' next)
-             [c' (+ mse (/ (- se mse) c'))])))
+        ([] (double-array 2))
         ([[_ mse]]
-         mse)))))
+         mse)
+        ([^doubles acc y2]
+         (when-let [[y1] @y-true']
+           (let [c (aget acc 0)
+                 mse (aget acc 1)
+                 se (math/abs (- y2 y1))
+                 c' (inc c)
+                 mse' (+ mse (/ (- se mse) c'))]
+             (vswap! y-true' next)
+             (doto acc
+               (aset 0 c')
+               (aset 1 mse')))))))))
 
-(criterium.core/quick-bench
-  (into [] (mean-squared-error (range 10000)) (range 1 10001)))
 
+(defn mse [y-true]
+  (let [y-true' (volatile! (seq y-true))]
+    (x/reduce
+      (fn
+        ([] (double-array 2))
+        ([[_ mse]]
+         mse)
+        ([^doubles acc y2]
+         (when-let [[y1] @y-true']
+           (let [c (aget acc 0)
+                 mse (aget acc 1)
+                 se (math/sq (- y2 y1))
+                 c' (inc c)
+                 mse' (+ mse (/ (- se mse) c'))]
+             (vswap! y-true' next)
+             (doto acc
+               (aset 0 c')
+               (aset 1 mse')))))))))
+
+
+(defn rmse [y-true]
+  (comp (mse y-true) (map math/sqrt)))
 
 
 (def skewness-s*
