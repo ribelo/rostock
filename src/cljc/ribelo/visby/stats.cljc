@@ -14,7 +14,43 @@
 (def mean x/avg)
 
 
-(def std x/sd)
+(defn std-s
+  ([] (double-array 3))
+  ([^doubles a]
+   (let [s (aget a 0) n (aget a 2)]
+     (if (< 1 n)
+       (math/sqrt (/ s (dec n)))
+       0.0)))
+  ([^doubles a x]
+   (let [s (aget a 0) m (aget a 1) n (aget a 2)
+         d (- x m)
+         n (inc n)
+         m' (+ m (/ d n))]
+     (doto a
+       (aset 0 (+ s (* d (- x m'))))
+       (aset 1 m')
+       (aset 2 n)))))
+
+
+(defn std-p
+  ([] (double-array 3))
+  ([^doubles a]
+   (let [s (aget a 0) n (aget a 2)]
+     (if (< 1 n)
+       (math/sqrt (/ s n))
+       0.0)))
+  ([^doubles a x]
+   (let [s (aget a 0) m (aget a 1) n (aget a 2)
+         d (- x m)
+         n (inc n)
+         m' (+ m (/ d n))]
+     (doto a
+       (aset 0 (+ s (* d (- x m'))))
+       (aset 1 m')
+       (aset 2 n)))))
+
+
+(def std std-s)
 
 
 (def median
@@ -77,7 +113,7 @@
                  (aset 0 q1)
                  (aset 1 q3))))))))
 
-(def variance
+(def variance-s
   (x/reduce
     (fn
       ([] [0.0 0.0 0.0])
@@ -95,7 +131,26 @@
            [c' m' (+ ss (* (- e m') (- e m)))]))))))
 
 
-(defn covariance [xs]
+(def variance-p
+  (x/reduce
+    (fn
+      ([] [0.0 0.0 0.0])
+      ([[c m ss]]
+       (when-not (zero? c)
+         (/ ss c) 0))
+      ([[c m ss :as acc] e]
+       (if (nil? e)
+         acc
+         (let [e (double e)
+               c' (inc c)
+               m' (+ m (/ (- e m) c'))]
+           [c' m' (+ ss (* (- e m') (- e m)))]))))))
+
+
+(def variance variance-s)
+
+
+(defn covariance-s [xs]
   (let [xs' (volatile! (seq xs))]
     (x/reduce
       (fn
@@ -114,6 +169,28 @@
              [c' mx' my'
               (+ ss (* (- x mx') (- y my)))])
            (reduced acc)))))))
+
+
+(defn covariance-p [xs]
+  (let [xs' (volatile! (seq xs))]
+    (x/reduce
+      (fn
+        ([] [0.0 0.0 0.0 0.0])
+        ([[c _ _ ss]]
+         (when-not (zero? c)
+           (/ ss c) 0))
+        ([[^double c ^double mx my ss :as acc] x]
+         (if-let [[y] @xs']
+           (let [c' (inc c)
+                 mx' (+ mx (/ (- x mx) c'))
+                 my' (+ my (/ (- y my) c'))]
+             (vswap! xs' next)
+             [c' mx' my'
+              (+ ss (* (- x mx') (- y my)))])
+           (reduced acc)))))))
+
+
+(def covariance covariance-s)
 
 
 (defn correlation [xs]
@@ -180,8 +257,24 @@
                (aset 1 mse')))))))))
 
 
-(defn rmse [y-true]
-  (comp (mse y-true) (map math/sqrt)))
+(defn rmse1 [y-true]
+  (let [y-true' (volatile! (seq y-true))]
+    (x/reduce
+      (fn
+        ([] (double-array 2))
+        ([[_ mse]]
+         (math/sqrt mse))
+        ([^doubles acc y2]
+         (when-let [[y1] @y-true']
+           (let [c (aget acc 0)
+                 mse (aget acc 1)
+                 se (math/sq (- y2 y1))
+                 c' (inc c)
+                 mse' (+ mse (/ (- se mse) c'))]
+             (vswap! y-true' next)
+             (doto acc
+               (aset 0 c')
+               (aset 1 mse')))))))))
 
 
 (def skewness-s*
