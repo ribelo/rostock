@@ -15,39 +15,43 @@
 
 
 (defn std-s
-  ([] (double-array 3))
-  ([^doubles a]
-   (let [s (aget a 0) n (aget a 2)]
-     (if (< 1 n)
-       (math/sqrt (/ s (dec n)))
-       0.0)))
-  ([^doubles a x]
-   (let [s (aget a 0) m (aget a 1) n (aget a 2)
-         d (- x m)
-         n (inc n)
-         m' (+ m (/ d n))]
-     (doto a
-       (aset 0 (+ s (* d (- x m'))))
-       (aset 1 m')
-       (aset 2 n)))))
+  (x/reduce
+    (fn
+      ([] (double-array 3))
+      ([^doubles a]
+       (let [s (aget a 0) n (aget a 2)]
+         (if (< 1 n)
+           (math/sqrt (/ s (dec n)))
+           0.0)))
+      ([^doubles a x]
+       (let [s (aget a 0) m (aget a 1) n (aget a 2)
+             d (- x m)
+             n (inc n)
+             m' (+ m (/ d n))]
+         (doto a
+           (aset 0 (+ s (* d (- x m'))))
+           (aset 1 m')
+           (aset 2 n)))))))
 
 
 (defn std-p
-  ([] (double-array 3))
-  ([^doubles a]
-   (let [s (aget a 0) n (aget a 2)]
-     (if (< 1 n)
-       (math/sqrt (/ s n))
-       0.0)))
-  ([^doubles a x]
-   (let [s (aget a 0) m (aget a 1) n (aget a 2)
-         d (- x m)
-         n (inc n)
-         m' (+ m (/ d n))]
-     (doto a
-       (aset 0 (+ s (* d (- x m'))))
-       (aset 1 m')
-       (aset 2 n)))))
+  (x/reduce
+    (fn
+      ([] (double-array 3))
+      ([^doubles a]
+       (let [s (aget a 0) n (aget a 2)]
+         (if (< 1 n)
+           (math/sqrt (/ s n))
+           0.0)))
+      ([^doubles a x]
+       (let [s (aget a 0) m (aget a 1) n (aget a 2)
+             d (- x m)
+             n (inc n)
+             m' (+ m (/ d n))]
+         (doto a
+           (aset 0 (+ s (* d (- x m'))))
+           (aset 1 m')
+           (aset 2 n)))))))
 
 
 (def std std-s)
