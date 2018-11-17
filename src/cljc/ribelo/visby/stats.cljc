@@ -14,7 +14,7 @@
 (def mean x/avg)
 
 
-(defn std-s
+(def std-s
   (x/reduce
     (fn
       ([] (double-array 3))
@@ -34,7 +34,7 @@
            (aset 2 n)))))))
 
 
-(defn std-p
+(def std-p
   (x/reduce
     (fn
       ([] (double-array 3))
