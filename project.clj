@@ -1,4 +1,4 @@
-(defproject ribelo/visby "0.1.0-SNAPSHOT"
+(defproject ribelo/visby "0.1.1-SNAPSHOT"
   :url "https://github.com/ribelo/ribelo.visby"
   :license {:name "Eclipse Public License"
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
