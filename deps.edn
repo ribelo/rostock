@@ -1,0 +1,5 @@
+{:paths   ["src/cljc"]
+ :deps    {org.clojure/clojure {:mvn/version "1.9.0"}
+           net.cgrand/xforms   {:mvn/version "0.18.2"}}
+ :aliases {:dev {:extra-deps {criterium                        {:mvn/version "0.4.4"}
+                              org.apache.commons/commons-math3 {:mvn/version "3.6.1"}}}}}
