@@ -261,7 +261,7 @@
                (aset 1 mse')))))))))
 
 
-(defn rmse1 [y-true]
+(defn rmse [y-true]
   (let [y-true' (volatile! (seq y-true))]
     (x/reduce
       (fn
@@ -484,12 +484,12 @@
   [x]
   (let [[[sy syy]] (sequence
                      (comp (x/transjuxt [(x/reduce +)
-                                         (comp emath/mul* (x/reduce +))]))
+                                         (comp (emath/mul*) (x/reduce +))]))
                      x)]
     (comp
       (x/transjuxt {:n   x/count
                     :sx  (x/reduce +)
-                    :sxx (comp emath/mul* (x/reduce +))
+                    :sxx (comp (emath/mul*) (x/reduce +))
                     :sxy (comp (emath/mul x) (x/reduce +))})
       (x/reduce
         (fn
@@ -497,7 +497,6 @@
           ([[n sx sxx sxy]]
            (let [beta (/ (- (* n sxy) (* sx sy))
                          (- (* n sxx) (* sx sx)))
-                 _ (println beta)
                  alpha (/ (- sy (* beta sx)) n)
                  f (fn [x] (+ (* x beta) alpha))]
              {:beta beta :alpha alpha :fn f}))
