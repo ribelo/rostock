@@ -1,7 +1,7 @@
 /target
 /classes
 /checkouts
-pom.xml
+/.cpcache
 pom.xml.asc
 *.jar
 *.class
