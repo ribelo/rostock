@@ -383,12 +383,22 @@
    (rolling-economic-drawndown 254)))
 
 
+(def tick->ret
+  "Convert a value series to a return series"
+  (comp (x/partition 2 1)
+        (fn [rf]
+          (fn
+            ([] (rf))
+            ([acc] (rf acc))
+            ([acc [x y]] (rf acc (- (/ y x) 1.0)))))))
+
+
 (defn redp-allocation
   ([risk freq]
    (comp
      (x/transjuxt [(rolling-economic-drawndown freq)
                    stats/std
-                   (sharpe-ratio 0.0)])
+                   (comp tick->ret (sharpe-ratio 0.0))])
      (x/reduce
        (fn
          ([] [0.0 0.0 0.0])
@@ -401,13 +411,3 @@
          ([acc coll] coll)))))
   ([risk]
    (redp-allocation risk 254)))
-
-
-(def tick->ret
-  "Convert a value series to a return series"
-  (comp (x/partition 2 1)
-        (fn [rf]
-          (fn
-            ([] (rf))
-            ([acc] (rf acc))
-            ([acc [x y]] (rf acc (- (/ y x) 1.0)))))))
