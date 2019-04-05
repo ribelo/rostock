@@ -372,13 +372,10 @@
 (defn rolling-economic-drawndown
   ([freq]
    (comp
-     (x/transjuxt [(x/take-last freq)
+     (x/take-last freq)
+     (x/transjuxt [(x/take-last 1)
                    stats/max])
-     (x/reduce
-       (fn
-         ([] [0.0 0.0])
-         ([[data high]] (- 1.0 (/ data high)))
-         ([acc coll] coll)))))
+     (map (fn [[last max]] (double (- 1.0 (/ last max)))))))
   ([]
    (rolling-economic-drawndown 254)))
 
