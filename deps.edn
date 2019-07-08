@@ -1,8 +1,11 @@
 {:paths   ["src"]
- :deps    {net.cgrand/xforms                {:mvn/version "0.19.0"}
-           uncomplicate/fluokitten          {:mvn/version "0.9.1"}
-           org.apache.commons/commons-math3 {:mvn/version "3.6.1"}
-           ribelo.haag                      {:git/url "https://github.com/ribelo/haag"
-                                             :sha     "0ae77f0ea571089121812dbf7dfe970a98cef3bb"}}
+ :deps    {net.cgrand/xforms                       {:mvn/version "0.19.0"}
+           uncomplicate/fluokitten                 {:mvn/version "0.9.1"}
+           org.apache.commons/commons-math3        {:mvn/version "3.6.1"}
+           com.github.haifengl/smile-interpolation {:mvn/version "1.5.2"}
+           com.github.haifengl/smile-core          {:mvn/version "1.5.2"}
+           com.github.haifengl/smile-netlib        {:mvn/version "1.5.2"}
+           ribelo.haag                             {:git/url "https://github.com/ribelo/haag"
+                                                    :sha     "0ae77f0ea571089121812dbf7dfe970a98cef3bb"}}
  :aliases {:dev {:extra-deps {org.clojure/clojure {:mvn/version "1.10.1"}
                               criterium           {:mvn/version "0.4.5"}}}}}
