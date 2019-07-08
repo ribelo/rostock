@@ -185,8 +185,8 @@
 (defn exp
   ([] (map math/exp))
   ([coll]
-   #?(:clj  (fk/fmap #(math/exp % n) coll)
-      :cljs (vmap #(math/exp % n) coll))))
+   #?(:clj  (fk/fmap math/exp coll)
+      :cljs (vmap math/exp coll))))
 
 (defn cumsum
   "Cumulative mean deviation"
