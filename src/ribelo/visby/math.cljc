@@ -9,19 +9,19 @@
   #?(:clj  Math/E
      :cljs (js/Math.E)))
 
-(def MAX-DOUBLE
+(def ^:const MAX-DOUBLE
   #?(:clj  Double/MAX_VALUE
      :cljs js/Number.MAX_VALUE))
 
-(def MIN-DOUBLE
+(def ^:const MIN-DOUBLE
   #?(:clj  Double/MIN_VALUE
      :cljs js/Number.MIN_VALUE))
 
-(def MAX-LONG
+(def ^:const MAX-LONG
   #?(:clj  Long/MAX_VALUE
      :cljs js/Number.MAX_VALUE))
 
-(def MIN-LONG
+(def ^:const MIN-LONG
   #?(:clj  Long/MIN_VALUE
      :cljs js/Number.MIN_VALUE))
 
@@ -84,5 +84,5 @@
 
 (defn sign ^long [^double x]
   (cond (> x 0) 1
-        (< x 0) -1
+        (< x 0.0) -1
         :else 0))
