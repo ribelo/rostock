@@ -7,7 +7,8 @@
    [net.cgrand.xforms :as x]
    [ribelo.haag :as h]
    [ribelo.visby.math :as math]
-   [ribelo.visby.emath :as emath])
+   [ribelo.visby.emath :as emath]
+   [primitive-math :as p])
   (:import (org.apache.commons.math3.stat StatUtils)
            (org.apache.commons.math3.stat.correlation
             Covariance PearsonsCorrelation)))
@@ -213,9 +214,9 @@
              (when (< x ^double @_min) (vreset! _min x))
              (when (< ^double @_min x) (vreset! _max x))
              (conj xs x))))))))
-  #?(:clj (^double [p coll]
+  #?(:clj (^double [^double p coll]
            (-> (h/seq->double-array coll)
-               (StatUtils/percentile (* p 100.0))))))
+               (StatUtils/percentile (p/* p 100.0))))))
 
 (defn percentile
   "Percentile of a sample"
@@ -284,7 +285,7 @@
           ([acc x] (conj acc x)))))))
   (^double [coll]
    (let [arr (h/seq->double-array coll)]
-     (- (percentile 75.0 arr) (percentile 25.0 arr)))))
+     (p/- (percentile 75.0 arr) (percentile 25.0 arr)))))
 
 (defn covariance-s
   "Covariance of sample"
@@ -320,7 +321,7 @@
   ([coll1 coll2]
    (let [arr1 (h/seq->double-array coll1)
          arr2 (h/seq->double-array coll2)]
-     (.covariance (Covariance.) arr1 arr2 true))))
+     (.covariance (Covariance.) ^doubles arr1 ^doubles arr2 true))))
 
 (comment
   (do (quick-bench (into [] (covariance-s data) data))
@@ -358,7 +359,7 @@
   ([coll1 coll2]
    (let [arr1 (h/seq->double-array coll1)
          arr2 (h/seq->double-array coll2)]
-     (.covariance (Covariance.) arr1 arr2 false))))
+     (.covariance (Covariance.) ^doubles arr1 ^doubles arr2 false))))
 
 (comment
   (do (quick-bench (into [] (covariance-s data) data))
@@ -403,7 +404,7 @@
   ([coll1 coll2]
    (let [arr1 (h/seq->double-array coll1)
          arr2 (h/seq->double-array coll2)]
-     (.correlation (PearsonsCorrelation.) arr1 arr2))))
+     (.correlation (PearsonsCorrelation.) ^doubles arr1 ^doubles arr2))))
 
 (comment
   (do (quick-bench (into [] (covariance-s data) data))
@@ -455,7 +456,7 @@
   ([x-pred y-true]
    (let [pred-arr (h/seq->double-array x-pred)
          true-arr (h/seq->double-array y-true)]
-     (.measure (smile.validation.MSE.) true-arr pred-arr))))
+     (.measure (smile.validation.MSE.) ^doubles true-arr ^doubles pred-arr))))
 
 (comment
   (do (quick-bench (into [] (mse data) data))
@@ -482,14 +483,14 @@
   ([x-pred y-true]
    (let [pred-arr (h/seq->double-array x-pred)
          true-arr (h/seq->double-array y-true)
-         mse      (mse pred-arr true-arr)]
+         mse      (mse ^doubles pred-arr ^doubles true-arr)]
      (math/sqrt mse))))
 
 (comment
   (do (quick-bench (into [] (rmse data) data))
       (quick-bench (rmse data data))))
 
-(def skewness-s*
+(def skewness-s* ;;TODO
   (fn
     ([] [0.0 0.0 0.0 0.0])
     ([[c _ m2 m3]]
@@ -513,7 +514,7 @@
 (def skewness-s
   (x/reduce skewness-s*))
 
-(def skewness-p
+(def skewness-p ;;TODO
   (x/reduce
    (completing skewness-s*
                (fn [[c _ m2 m3]]
@@ -523,7 +524,7 @@
 
 (def skewness skewness-p)
 
-(def kurtosis
+(def kurtosis ;;TODO
   (x/reduce
    (fn
      ([] [0.0 0.0 0.0 0.0 0.0])
@@ -553,7 +554,7 @@
                      (* -4 m3 dc))]
           [c' m1' m2' m3' m4']))))))
 
-(def mad
+(def mad ;;TODO
   "Mean absolute deviation"
   (comp (x/transjuxt {:xs (x/into []) :m mean})
         (x/reduce
@@ -568,7 +569,7 @@
               r))
            ([acc {:keys [xs m]}] (-> acc (conj! xs) (conj! m)))))))
 
-(def mode
+(def mode ;;TODO
   "Most frequent value in an array of elements"
   (comp (x/by-key identity x/count)
         (x/sort-by last)
@@ -579,7 +580,7 @@
            ([acc] acc)
            ([acc [e c]] (when e (reduced e)))))))
 
-(defn moment
+(defn moment ;;TODO
   "Central moments. First moment is zero, second is variance."
   ([k]
    (comp (x/transjuxt [(x/into []) mean])
@@ -596,7 +597,7 @@
             ([acc [xs m]] (-> acc (conj! xs) (conj! m)))))))
   ([] (moment 1.0)))
 
-(defn pdist-euclidean
+(defn pdist-euclidean ;;TODO
   "Pairwise distance between two sets of observations"
   [xs]
   (let [xs' (volatile! xs)]
@@ -610,7 +611,7 @@
                     (+ acc (double (math/pow ^double (- x y) 2.0))))
                   (reduced acc)))))))
 
-(defn pdist-manhatan
+(defn pdist-manhatan ;;TODO
   "Pairwise distance between two sets of observations"
   [xs]
   (let [xs' (volatile! xs)
@@ -624,7 +625,7 @@
                         (reduced acc))))]
     (x/reduce fn)))
 
-(defn pdist-chebychev
+(defn pdist-chebychev ;;TODO
   "Pairwise distance between two sets of observations"
   [xs]
   (let [xs' (volatile! xs)
@@ -638,7 +639,7 @@
                         (reduced acc))))]
     (x/reduce fn)))
 
-(defn pdist-hamming
+(defn pdist-hamming ;;TODO
   "Pairwise distance between two sets of observations"
   [xs]
   (let [xs' (volatile! xs)
@@ -652,7 +653,7 @@
                         (reduced acc))))]
     (x/reduce fn)))
 
-(defn pdist
+(defn pdist ;;TODO
   "Pairwise distance between two sets of observations.
    Mode :euclidean, :manhatan, :chebychev, :hamming"
   ([xs mode]
@@ -664,7 +665,7 @@
   ([xs]
    (pdist-euclidean xs)))
 
-(def zscore
+(def zscore ;;TODO
   "Standardized Z score"
   (comp
    (x/transjuxt [(x/into []) mean std])
@@ -677,7 +678,7 @@
                     (emath/div s)) xs))
       ([acc [xs m s]] (-> acc (conj! xs) (conj! m) (conj! s)))))))
 
-(defn linear-regression
+(defn linear-regression ;;TODO
   "Linear regression of Y on X"
   [x]
   (let [[[sy syy]] (sequence
@@ -701,7 +702,7 @@
         ([acc {:keys [n sx sxx sxy]}]
          (-> acc (conj! n) (conj! sx) (conj! sxx) (conj! sxy))))))))
 
-(defn ema [n]
+(defn ema [n] ;;TODO
   (comp
    (x/take-last n)
    (x/reduce

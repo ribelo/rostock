@@ -3,14 +3,17 @@
   (:require
    #?(:clj [uncomplicate.fluokitten.core :as fk])
    #?(:clj [uncomplicate.fluokitten.jvm])
+   #?(:clj [primitive-math :as p])
    ;; [criterium.core :refer [quick-bench]]
    [net.cgrand.xforms :as x]
    [ribelo.haag :as h]
    [ribelo.visby.math :as math]))
 
 (comment
-  (def data (vec (repeatedly 10000 #(* 100 (- 0.5 (rand))))))
-  (def arr (double-array data)))
+  (do (def data (vec (repeatedly 10000 #(* 100 (- 0.5 (rand))))))
+      (def arr (double-array data))))
+
+(set! *warn-on-reflection* true)
 
 (defprotocol Emath
   (min [xs] [coll1 coll2])
@@ -24,37 +27,37 @@
   Emath
   (min
     ([xs]
-     (map-indexed (fn [i ^double x] (math/min x  ^double (nth xs i)))))
+     (map-indexed (fn [i ^double x] (math/min x ^double (nth xs i)))))
     ([coll1 coll2]
      #?(:clj  (fk/fmap math/min coll1 coll2)
         :cljs (mapv math/min coll1 coll2))))
   (max
     ([xs]
-     (map-indexed (fn [i ^double x] (math/max x  ^double (nth xs i)))))
+     (map-indexed (fn [i ^double x] (math/max x ^double (nth xs i)))))
     ([coll1 coll2]
      #?(:clj  (fk/fmap math/max coll1 coll2)
         :cljs (mapv math/max coll1 coll2))))
   (add
     ([xs]
-     (map-indexed (fn [i ^double x] (double (+ x ^double (nth xs i))))))
+     (map-indexed (fn [i ^double x] (double (p/+ x ^double (nth xs i))))))
     ([coll1 coll2]
      #?(:clj  (fk/fmap + coll1 coll2)
         :cljs (mapv + coll1 coll2))))
   (sub
     ([xs]
-     (map-indexed (fn [i ^double x] (double (- x ^double (nth xs i))))))
+     (map-indexed (fn [i ^double x] (double (p/- x ^double (nth xs i))))))
     ([coll1 coll2]
      #?(:clj  (fk/fmap - coll1 coll2)
         :cljs (mapv - coll1 coll2))))
   (mul
     ([xs]
-     (map-indexed (fn [i ^double x] (double (* x ^double (nth xs i))))))
+     (map-indexed (fn [i ^double x] (double (p/* x ^double (nth xs i))))))
     ([coll1 coll2]
      #?(:clj  (fk/fmap * coll1 coll2)
         :cljs (mapv * coll1 coll2))))
   (div
     ([xs]
-     (map-indexed (fn [i ^double x] (double (/ x ^double (nth xs i))))))
+     (map-indexed (fn [i ^double x] (double (p/div x ^double (nth xs i))))))
     ([coll1 coll2]
      #?(:clj  (fk/fmap / coll1 coll2)
         :cljs (mapv / coll1 coll2)))))
@@ -86,34 +89,34 @@
      Emath
      (min
        ([^double x]
-        (map #(math/min x ^double %)))
+        (map #(p/min x ^double %)))
        ([^double x coll]
-        (fk/fmap #(math/min x ^double %) coll)))
+        (fk/fmap #(p/min x ^double %) coll)))
      (max
        ([^double x]
-        (map #(math/max x ^double %)))
+        (map #(p/max x ^double %)))
        ([^double x coll]
-        (fk/fmap #(math/max x ^double %) coll)))
+        (fk/fmap #(p/max x ^double %) coll)))
      (add
        ([^double x]
-        (map #(double (+ x ^double %))))
+        (map #(double (p/+ x ^double %))))
        ([^double x coll]
-        (fk/fmap #(+ x ^double %) coll)))
+        (fk/fmap #(p/+ x ^double %) coll)))
      (sub
        ([^double x]
-        (map #(double (- ^double % x))))
+        (map #(double (p/- ^double % x))))
        ([^double x coll]
-        (fk/fmap #(- ^double % x) coll)))
+        (fk/fmap #(p/- ^double % x) coll)))
      (mul
        ([^double x]
-        (map #(double (* x ^double %))))
+        (map #(double (p/* x ^double %))))
        ([^double x coll]
-        (fk/fmap #(* x ^double %) coll)))
+        (fk/fmap #(p/* x ^double %) coll)))
      (div
        ([^double x]
-        (map #(double (/ ^double % x))))
+        (map #(double (p/div ^double % x))))
        ([^double x coll]
-        (fk/fmap #(/ ^double % x) coll)))))
+        (fk/fmap #(p/div ^double % x) coll)))))
 
 (comment
   (do
@@ -124,7 +127,7 @@
   ([]
    (map #(* ^double % ^double %)))
   ([coll]
-   #?(:clj  (fk/fmap #(* ^double % ^double %) coll)
+   #?(:clj  (fk/fmap #(p/* ^double % ^double %) coll)
       :cljs (vmap #(* ^double % ^double %) coll))))
 
 (defn abs
