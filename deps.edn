@@ -3,10 +3,8 @@
            primitive-math                          {:mvn/version "0.1.6"}
            uncomplicate/fluokitten                 {:mvn/version "0.9.1"}
            org.apache.commons/commons-math3        {:mvn/version "3.6.1"}
-           com.github.haifengl/smile-interpolation {:mvn/version "1.5.2"}
-           com.github.haifengl/smile-core          {:mvn/version "1.5.2"}
-           com.github.haifengl/smile-netlib        {:mvn/version "1.5.2"}
+           com.github.haifengl/smile-interpolation {:mvn/version "1.5.3"}
+           com.github.haifengl/smile-core          {:mvn/version "1.5.3"}
+           com.github.haifengl/smile-netlib        {:mvn/version "1.5.3"}
            ribelo.haag                             {:git/url "https://github.com/ribelo/haag"
-                                                    :sha     "bb12cc27ae25a9b803f37872e68c31e104a046a9"}}
- :aliases {:dev {:extra-deps {org.clojure/clojure {:mvn/version "1.10.1"}
-                              criterium           {:mvn/version "0.4.5"}}}}}
+                                                    :sha     "5c243b086dab9dc47bdd5123fc6f956318338967"}}}

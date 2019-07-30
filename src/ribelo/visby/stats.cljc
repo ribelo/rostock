@@ -407,8 +407,8 @@
      (.correlation (PearsonsCorrelation.) ^doubles arr1 ^doubles arr2))))
 
 (comment
-  (do (quick-bench (into [] (covariance-s data) data))
-      (quick-bench (covariance-s data data))))
+  (do (quick-bench (into [] (correlation data) data))
+      (quick-bench (correlation data data))))
 
 (defn mae
   ([y-true]
@@ -490,26 +490,33 @@
   (do (quick-bench (into [] (rmse data) data))
       (quick-bench (rmse data data))))
 
-(def skewness-s* ;;TODO
-  (fn
-    ([] [0.0 0.0 0.0 0.0])
-    ([[c _ m2 m3]]
-     (let [d (* (math/pow m2 1.5) (- c 2))]
-       (when-not (zero? d)
-         (/ (* (math/sqrt (dec c)) m3 c) d))))
-    ([[^double c ^double m1 ^double m2 ^double m3 :as acc] e]
-     (if (nil? e)
-       acc
-       (let [e (double e)
-             c' (inc c)
-             d (- e m1)
-             dc (/ d c')
-             m1' (+ m1 dc)
-             m2' (+ m2 (* (math/sq d) (/ c c')))
-             m3' (+ m3
-                    (/ (* (math/pow d 3) (- c' 1) (- c' 2)) (math/sq c'))
-                    (* -3 m2 dc))]
-         [c' m1' m2' m3'])))))
+(defn skewness-s*
+  ([]
+   (fn
+     ([] [0.0 0.0 0.0 0.0])
+     ([[c _ m2 m3]]
+      (let [d (* (math/pow m2 1.5) (- c 2))]
+        (when-not (zero? d)
+          (/ (* (math/sqrt (dec c)) m3 c) d))))
+     ([[^double c ^double m1 ^double m2 ^double m3 :as acc] e]
+      (if (nil? e)
+        acc
+        (let [e   (double e)
+              c'  (inc c)
+              d   (- e m1)
+              dc  (/ d c')
+              m1' (+ m1 dc)
+              m2' (+ m2 (* (math/sq d) (/ c c')))
+              m3' (+ m3
+                     (/ (* (math/pow d 3) (- c' 1) (- c' 2)) (math/sq c'))
+                     (* -3 m2 dc))]
+          [c' m1' m2' m3'])))))
+  (^double [coll]
+   (let [arr (h/seq->double-array coll)])))
+
+(comment
+  (do (quick-bench (into [] (rmse data) data))
+      (quick-bench (rmse data data))))
 
 (def skewness-s
   (x/reduce skewness-s*))
