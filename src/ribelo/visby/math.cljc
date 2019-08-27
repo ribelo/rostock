@@ -83,12 +83,12 @@
   (<= (abs (- y x)) e))
 
 (defn sign ^long [^double x]
-  (cond (> x 0) 1
+  (cond (> x 0.0 ) 1
         (< x 0.0) -1
         :else 0))
 
 (defn round
-  (^double [              ^double n] (round 1 n))
+  (^double [              ^double n] (Math/round n))
   (^double [^long nplaces ^double n]
    (if (< 1 nplaces)
      (let [modifier (pow 10.0 (double nplaces))

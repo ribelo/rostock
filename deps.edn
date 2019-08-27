@@ -1,10 +1,10 @@
-{:paths   ["src"]
- :deps    {net.cgrand/xforms                       {:mvn/version "0.19.0"}
-           primitive-math                          {:mvn/version "0.1.6"}
-           uncomplicate/fluokitten                 {:mvn/version "0.9.1"}
-           org.apache.commons/commons-math3        {:mvn/version "3.6.1"}
-           com.github.haifengl/smile-interpolation {:mvn/version "1.5.3"}
-           com.github.haifengl/smile-core          {:mvn/version "1.5.3"}
-           com.github.haifengl/smile-netlib        {:mvn/version "1.5.3"}
-           ribelo.haag                             {:git/url "https://github.com/ribelo/haag"
-                                                    :sha     "5c243b086dab9dc47bdd5123fc6f956318338967"}}}
+{:paths ["src"]
+ :deps  {net.cgrand/xforms                       {:mvn/version "0.19.0"}
+         primitive-math                          {:mvn/version "0.1.6"}
+         uncomplicate/fluokitten                 {:mvn/version "0.9.1"}
+         org.apache.commons/commons-math3        {:mvn/version "3.6.1"}
+         com.github.haifengl/smile-interpolation {:mvn/version "1.5.3"}
+         com.github.haifengl/smile-core          {:mvn/version "1.5.3"}
+         com.github.haifengl/smile-netlib        {:mvn/version "1.5.3"}
+         ribelo.haag                             {:git/url "https://github.com/ribelo/haag"
+                                                  :sha     "5c243b086dab9dc47bdd5123fc6f956318338967"}}}
