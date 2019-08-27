@@ -88,11 +88,11 @@
         :else 0))
 
 (defn round
-  (^double [              ^double n] (Math/round n))
+  (^double [              ^double n] (double (Math/round n)))
   (^double [^long nplaces ^double n]
    (if (< 1 nplaces)
      (let [modifier (pow 10.0 (double nplaces))
            n*       (* n modifier)
            rounded  (Math/round n*)]
        (/ rounded modifier))
-     (Math/round n))))
+     (double (Math/round n)))))
