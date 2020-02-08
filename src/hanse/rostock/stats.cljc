@@ -16,8 +16,6 @@
       (require '[criterium.core :refer [quick-bench]])
       (require '[taoensso.encore :as e])))
 
-(def df (DataFrame/of (transpose (into-array [arr arr])) (into-array ["a" "b"])))
-
 (defn min
   "Smallest element in collection"
   ([] x/min)
