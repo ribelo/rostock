@@ -28,7 +28,7 @@
      :cljs js/Number.MIN_VALUE))
 
 (defn max ^double [^double x ^double y]
-  #?(:clj  (Math/max x x)
+  #?(:clj  (Math/max x y)
      :cljs (js/Math.max x y)))
 
 (defn min ^double [^double x ^double y]
