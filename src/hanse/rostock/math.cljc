@@ -1,5 +1,7 @@
-(ns ribelo.visby.math
+(ns hanse.rostock.math
   (:refer-clojure :exclude [min max]))
+
+(set! *unchecked-math* :warn-on-boxed)
 
 (def ^:const PI
   #?(:clj  Math/PI
@@ -26,7 +28,7 @@
      :cljs js/Number.MIN_VALUE))
 
 (defn max ^double [^double x ^double y]
-  #?(:clj  (Math/max x y)
+  #?(:clj  (Math/max x x)
      :cljs (js/Math.max x y)))
 
 (defn min ^double [^double x ^double y]
@@ -71,28 +73,52 @@
   #?(:clj  (Math/sin x)
      :cljs (js/Math.sin x)))
 
-(defn ceil ^double [^double x]
-  #?(:clj  (Math/ceil x)
-     :cljs (js/Math.ceil x)))
+(defn ceil
+  (^double [^double x]
+   #?(:clj  (Math/ceil x)
+      :cljs (js/Math.ceil x)))
+  (^double [^double x ^long nplaces]
+   (if (< 1 nplaces)
+     (let [modifier (pow 10.0 (double nplaces))
+           x*       (* x modifier)
+           rounded  (Math/ceil x*)]
+       (/ rounded modifier))
+     (double (Math/ceil x)))))
 
-(defn floor ^double [^double x]
-  #?(:clj  (Math/floor x)
-     :cljs (js/Math.floor x)))
+(defn floor
+  (^double [^double x]
+   #?(:clj  (Math/floor x)
+      :cljs (js/Math.floor x)))
+  (^double [^double x ^long nplaces]
+   (if (< 1 nplaces)
+     (let [modifier (pow 10.0 (double nplaces))
+           x*       (* x modifier)
+           rounded  (Math/floor x*)]
+       (/ rounded modifier))
+     (double (Math/floor x)))))
 
 (defn equal [^double x ^double y ^double e]
   (<= (abs (- y x)) e))
 
 (defn sign ^long [^double x]
-  (cond (> x 0.0 ) 1
+  (cond (> x 0.0) 1
         (< x 0.0) -1
-        :else 0))
+        :else     0))
 
 (defn round
-  (^double [              ^double n] (double (Math/round n)))
-  (^double [^long nplaces ^double n]
+  (^double [^double x]
+   #?(:clj (double (Math/round x))
+      :cljs (js/Math.round x)))
+  (^double [^double x ^long nplaces]
    (if (< 1 nplaces)
      (let [modifier (pow 10.0 (double nplaces))
-           n*       (* n modifier)
-           rounded  (Math/round n*)]
+           x*       (* x modifier)
+           rounded  #?(:clj (Math/round x*)
+                       :cljs (js/Math.round x*))]
        (/ rounded modifier))
-     (double (Math/round n)))))
+     (double #?(:clj (Math/round x)
+                :cljs (js/Math.round x))))))
+
+(defn round2 ^double [^double x]
+  #?(:clj  (/ (Math/round (* x 100.0)) 100.0)
+     :cljs (/ (js/Math.round (* x 100.0)) 100.0)))
