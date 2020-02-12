@@ -392,56 +392,56 @@
          arr2d (h/seq->double-double-array [arr1 arr2])]
      (MathEx/pdist arr2d))))
 
-(defn pdist-manhatan ;;TODO
-  "Pairwise distance between two sets of observations"
-  [xs]
-  (let [xs' (volatile! xs)
-        fn (fn
-             ([] 0.0)
-             ([acc] acc)
-             ([acc x] (if-let [[y] @xs']
-                        (do
-                          (vswap! xs' next)
-                          (+ ^double acc (math/abs ^double (- x y))))
-                        (reduced acc))))]
-    (x/reduce fn)))
+;; (defn pdist-manhatan ;;TODO
+;;   "Pairwise distance between two sets of observations"
+;;   [xs]
+;;   (let [xs' (volatile! xs)
+;;         fn (fn
+;;              ([] 0.0)
+;;              ([acc] acc)
+;;              ([acc x] (if-let [[y] @xs']
+;;                         (do
+;;                           (vswap! xs' next)
+;;                           (+ ^double acc (math/abs ^double (- x y))))
+;;                         (reduced acc))))]
+;;     (x/reduce fn)))
 
-(defn pdist-chebychev ;;TODO
-  "Pairwise distance between two sets of observations"
-  [xs]
-  (let [xs' (volatile! xs)
-        fn (fn
-             ([] math/MIN-DOUBLE)
-             ([acc] acc)
-             ([acc x] (if-let [[y] @xs']
-                        (do
-                          (vswap! xs' next)
-                          (math/max ^double acc (double (math/abs ^double (- x y)))))
-                        (reduced acc))))]
-    (x/reduce fn)))
+;; (defn pdist-chebychev ;;TODO
+;;   "Pairwise distance between two sets of observations"
+;;   [xs]
+;;   (let [xs' (volatile! xs)
+;;         fn (fn
+;;              ([] math/MIN-DOUBLE)
+;;              ([acc] acc)
+;;              ([acc x] (if-let [[y] @xs']
+;;                         (do
+;;                           (vswap! xs' next)
+;;                           (math/max ^double acc (double (math/abs ^double (- x y)))))
+;;                         (reduced acc))))]
+;;     (x/reduce fn)))
 
-(defn pdist-hamming ;;TODO
-  "Pairwise distance between two sets of observations"
-  [xs]
-  (let [xs' (volatile! xs)
-        fn (fn
-             ([] 0.0)
-             ([acc] acc)
-             ([acc x] (if-let [[y] @xs']
-                        (do
-                          (vswap! xs' next)
-                          (if (not= x y) (inc acc) acc))
-                        (reduced acc))))]
-    (x/reduce fn)))
+;; (defn pdist-hamming ;;TODO
+;;   "Pairwise distance between two sets of observations"
+;;   [xs]
+;;   (let [xs' (volatile! xs)
+;;         fn (fn
+;;              ([] 0.0)
+;;              ([acc] acc)
+;;              ([acc x] (if-let [[y] @xs']
+;;                         (do
+;;                           (vswap! xs' next)
+;;                           (if (not= x y) (inc acc) acc))
+;;                         (reduced acc))))]
+;;     (x/reduce fn)))
 
-(defn pdist ;;TODO
-  "Pairwise distance between two sets of observations.
-   Mode :euclidean, :manhatan, :chebychev, :hamming"
-  ([xs mode]
-   (case mode
-     :euclidean (pdist-euclidean xs)
-     :manhatan (pdist-manhatan xs)
-     :chebychev (pdist-chebychev xs)
-     :hamming (pdist-hamming xs)))
-  ([xs]
-   (pdist-euclidean xs)))
+;; (defn pdist ;;TODO
+;;   "Pairwise distance between two sets of observations.
+;;    Mode :euclidean, :manhatan, :chebychev, :hamming"
+;;   ([xs mode]
+;;    (case mode
+;;      :euclidean (pdist-euclidean xs)
+;;      :manhatan (pdist-manhatan xs)
+;;      :chebychev (pdist-chebychev xs)
+;;      :hamming (pdist-hamming xs)))
+;;   ([xs]
+;;    (pdist-euclidean xs)))
